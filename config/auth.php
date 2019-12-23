@@ -40,6 +40,11 @@ return [
             'driver' => 'jwt',
             'provider' => 'users',
             'hash' => false,
+        ],
+        'admin' => [
+            'driver' => 'jwt',
+            'provider' => 'admins',
+            'hash' => false,
         ]
     ],
 
@@ -64,6 +69,10 @@ return [
         'users' => [
             'driver' => 'eloquent',
             'model' => App\User::class,
+        ],
+        'admins' => [
+            'driver' => 'eloquent',
+            'model' => App\Admin::class,
         ],
 
         // 'users' => [
@@ -94,6 +103,12 @@ return [
             'expire' => 60,
             'throttle' => 60,
         ],
+        'admins' => [
+            'provider' => 'admins',
+            'table' => 'password_resets',
+            'expire' => 20,
+            'throttle' => 60,
+        ],
     ],
 
     /*
@@ -107,6 +122,6 @@ return [
     |
     */
 
-    'password_timeout' => 10800,
+    'password_timeout' => 3600,
 
 ];

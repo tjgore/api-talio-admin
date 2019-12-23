@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
-
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -13,22 +11,21 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
 Route::prefix('v1')->group(function () {
     Route::get('/', function () {
         return "Welcome to Talio's API!";
     });
 
-    Route::post('/register', 'AuthController@register');
-    Route::post('/login', 'AuthController@login');
-    Route::post('/logout', 'AuthController@logout');
-    Route::post('/refresh', 'AuthController@refresh');
+    Route::namespace('Admin')->group( function () {
+        Route::post('/register', 'AuthController@register');
+        Route::post('/login', 'AuthController@login');
+        Route::post('/logout', 'AuthController@logout');
+        Route::post('/refresh', 'AuthController@refresh');
 
-    Route::middleware(['jwt.auth'])->group(function () {
-        Route::get('/profile/{user}', 'ProfileController@get');
-    });   
+        Route::middleware(['assign.guard:admin', 'jwt.auth'])->group(function () {
+            Route::get('/profile/{admin}', 'ProfileController@get');
+        });   
+    });
+    
 
 });

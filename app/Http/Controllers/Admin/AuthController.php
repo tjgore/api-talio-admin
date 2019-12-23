@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
-use App\User;
+use App\Admin;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Auth;
+use App\Http\Controllers\Controller;
 
 /**
  * Class for managing and authenticating users
@@ -13,7 +14,7 @@ use Auth;
 class AuthController extends Controller
 {
     /**
-     * Register a user
+     * Register an admin
      * 
      * @param Request $request
      * @return JsonResponse
@@ -28,7 +29,7 @@ class AuthController extends Controller
             'phone' => 'required|string'
         ]);
 
-        $user = User::create([
+        Admin::create([
             'first_name'     => $request->first_name,
             'last_name'      => $request->last_name,
             'phone'          => $request->phone,
@@ -40,7 +41,7 @@ class AuthController extends Controller
     }
 
     /**
-     * Login user
+     * Login admin
      * 
      * @param Request $request
      * @return JsonResponse
@@ -54,7 +55,7 @@ class AuthController extends Controller
 
         try {
 
-            if (!$token = Auth::attempt($request->only('email', 'password'))) {
+            if (!$token = Auth::guard('admin')->attempt($request->only('email', 'password'))) {
                 return response()->json(['user_not_found'], 404);
             }
 
@@ -72,10 +73,10 @@ class AuthController extends Controller
 
         }
 
-        $user = Auth::user();
+        $admin = Auth::guard('admin')->user();
 
-        $this->updateLoggedInAt($user);
-        return $this->respondWithToken($token, $user);
+        $this->updateLoggedInAt($admin);
+        return $this->respondWithToken($token, $admin);
     }
 
     /**
@@ -85,7 +86,7 @@ class AuthController extends Controller
      */
     public function refresh() :JsonResponse
     {
-        $token = Auth::refresh(true, true);
+        $token = Auth::guard('admin')->refresh(true, true);
 
         return $this->success($token);
     }
@@ -98,7 +99,7 @@ class AuthController extends Controller
      */
     public function logout() :JsonResponse
     {
-        Auth::logout(true);
+        Auth::guard('admin')->logout(true);
         return $this->success('logged out');
     }
 
@@ -106,27 +107,27 @@ class AuthController extends Controller
      * Set json response token, and user email
      * 
      * @param string $token
-     * @param User $user
+     * @param Admin $admin
      * @return JsonResponse
      */
-    protected function respondWithToken(string $token, User $user) :JsonResponse
+    protected function respondWithToken(string $token, Admin $admin) :JsonResponse
     {
         return response()->json([
             'token' => $token,
-            'email' => $user->email,
-            'expires_in' => auth()->factory()->getTTL() * 60
+            'email' => $admin->email,
+            'expires_in' => auth()->guard('admin')->factory()->getTTL() * 60
         ]);
     }
 
     /**
      * Update the user logged in at date
      * 
-     * @param User $user
+     * @param Admin $admin
      * @return void
      */
-    protected function updateLoggedInAt(User $user)
+    protected function updateLoggedInAt(Admin $admin) :void
     {
-       $user->loggedin_at = now();
-       $user->save();
+       $admin->loggedin_at = now();
+       $admin->save();
     }
 }
