@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use App\Admin;
+use App\Model\Admin;
 use Auth;
 use App\Http\Controllers\Controller;
 
