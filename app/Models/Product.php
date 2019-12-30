@@ -1,11 +1,13 @@
 <?php
 
-namespace App\Model;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
+    const PAGINATE = 40;
+    
     protected $guarded = [
         'id', 'deleted_at', 'created_at', 'updated_at','business_id'
     ];

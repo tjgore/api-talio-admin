@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use App\Models\Status;
 
 class CreateStoresTable extends Migration
 {
@@ -17,13 +18,13 @@ class CreateStoresTable extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('admin_id');
             $table->foreign('admin_id')->references('id')->on('admins');
+            $table->unsignedInteger('status_id')->default(Status::ACTIVE);
+            $table->foreign('status_id')->references('id')->on('statuses');
             $table->string('slug')->unique();
             $table->string('name');
-            $table->string('email');
-            $table->string('phone');
             $table->string('logo_url')->nullable();
             $table->text('description')->nullable();
-            $table->boolean('status')->default(1);
+            $table->json('social_media')->nullable();
             $table->timestamps();
         });
     }

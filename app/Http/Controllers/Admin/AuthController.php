@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Model\Admin;
+use App\Models\Admin;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Auth;
 use App\Http\Controllers\Controller;
+use Tymon\JWTAuth\Exceptions\JWTException;
 
 /**
  * Class for managing and authenticating users
@@ -59,18 +60,8 @@ class AuthController extends Controller
                 return response()->json(['user_not_found'], 404);
             }
 
-        } catch (\Tymon\JWTAuth\Exceptions\TokenExpiredException $e) {
-
-            return response()->json(['token_expired'], 500);
-
-        } catch (\Tymon\JWTAuth\Exceptions\TokenInvalidException $e) {
-
-            return response()->json(['token_invalid'], 500);
-
-        } catch (\Tymon\JWTAuth\Exceptions\JWTException $e) {
-
-            return response()->json(['token_absent' => $e->getMessage()], 500);
-
+        } catch (JWTException $e) {
+            return response()->json(['error' => 'Could not create token'], 500);
         }
 
         $admin = Auth::guard('admin')->user();

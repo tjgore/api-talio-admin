@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use App\Model\Admin;
+use App\Models\Admin;
 use Auth;
 use App\Http\Controllers\Controller;
 
@@ -34,7 +34,7 @@ class ProfileController extends Controller
             'dob' => 'nullable|date'
         ]);
         
-        $user = Auth::guard('admin')->user();
+        $user = Auth::user();
         $user->first_name = $request->first_name;
         $user->last_name = $request->last_name;
         $user->phone = $request->phone;
